@@ -18,7 +18,7 @@ Installation is done using the [`npm install` command](https://docs.npmjs.com/ge
 
 ## Install
 
-    npm install @here/here-tracking-js
+    npm install @here/tracking-js
 
 ## Directory Layout
 
@@ -181,5 +181,3 @@ You want to contribute to this library? Welcome! Please read the [CONTRIBUTING.m
 
 Copyright (C) 2017-2019 HERE Europe B.V.
 MIT license, see the [LICENSE](LICENSE) file in the root of this project for license details.
-
-See the [LICENSE](LICENSE) file in the root of this project for license details.
