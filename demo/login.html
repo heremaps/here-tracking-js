@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>HERE Tracking – Login</title>
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+</head>
+
+<body class="login">
+  <h1>Login</h1>
+  <form id="login">
+    <label>
+      HERE Account email:
+      <input type="email" autofocus=true autocomplete="email" name="email" id="email" placeholder="email" required />
+    </label>
+    <label>
+      HERE Account password:
+      <input type="password" autocomplete="password" name="password" id="password" placeholder="password" required />
+    </label>
+    <button>Log in</button>
+  </form>
+  <!-- HERE Tracking SDK -->
+  <script src="../lib/HERETracking.js"></script>
+  <!-- Credentials for demo -->
+  <script src="js/credentials.js"></script>
+  <!-- HERE Account helper -->
+  <script src="js/hereAccountHelper.js"></script>
+  <script>
+  var tracking = new HERETracking();
+  tracking.environment = credentials.environment;
+  var ha = hereAccountHelper(tracking);
+
+  if (ha.isLoggedIn()) {
+    if (window.location.search.indexOf("returnTo") > 0) {
+      window.location = decodeURIComponent(window.location.search.split('=')[1]);
+    }
+  } else {
+    document.querySelector('#login').addEventListener('submit', function(e) {
+      e.preventDefault();
+      ha.login(document.querySelector("#email").value, document.querySelector("#password").value);
+      return false;
+    });
+  }
+  </script>
+</body>
+
+</html>

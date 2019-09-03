@@ -1,0 +1,268 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>HERE Tracking – Device Viewer</title>
+  <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css" />
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+  <script src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+  <script src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+  <script src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+  <script src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+</head>
+
+<body class="mapView embed">
+  <h1></h1>
+  <div id="map"></div>
+  <div id="info">
+    <address></address>
+    <time></time>
+  </div>
+  <ul id="buttons">
+    <li id="trace"><img src="img/buttons/trace.png"></li>
+    <li id="refresh"><img src="img/buttons/refresh.png"></li>
+  </ul>
+  <div id="loading"></div>
+  <!-- HERE Maps helper -->
+  <script src="js/map/map.js"></script>
+  <!-- HERE Tracking SDK -->
+  <script src="../lib/HERETracking.js"></script>
+  <!-- Credentials for demo -->
+  <script src="js/credentials.js"></script>
+  <!-- HERE Account helper -->
+  <script src="js/hereAccountHelper.js"></script>
+  <script>
+  // Create new HERE Map helper
+  const HEREMap = new HERE(credentials.app_id, credentials.app_code);
+
+  // Create new HERETracking object
+  const tracking = new HERETracking();
+
+  // Set environment to production
+  tracking.environment = credentials.environment;
+
+  // Auth logic
+  const ha = hereAccountHelper(credentials);
+
+  // Web viewer logic
+  const query = parseQuery(window.location.search);
+  const trackingId = credentials.embed.trackingId;
+  let map, mapSnapped = true,
+    updateTimer, tracePolyline, pingCircleContainer, showTrace = false,
+    marker;
+
+  document.querySelector('h1').style.display = credentials.embed.ui.header ? 'block': 'none';
+  document.querySelector('#info').style.display = credentials.embed.ui.info ? 'block': 'none';
+  document.querySelector('#buttons').style.display = credentials.embed.ui.buttons ? 'flex': 'none';
+
+  tracking.users.login(credentials.embed.email, credentials.embed.password)
+  .then(ha.saveLoginData)
+  .then(() => {
+    HEREMap.onLoad(update);
+    addEventListeners();
+    map = HEREMap.map(document.querySelector('#map'), [52.5, 13.4], 14);
+    map.addEventListener('dragstart', function(e) {
+      mapSnapped = false
+    });
+
+  });
+
+  // Fetch the device shadow and trace
+  function update() {
+    clearTimeout(updateTimer);
+    var requestOptions = {
+      token: ha.getToken()
+    };
+
+    tracking.shadows.get(trackingId, requestOptions)
+      .then(function(data) {
+        document.querySelector('h1').innerText = data.name || trackingId;
+        // If there's a position reported
+        if (data && data.reported &&
+          data.reported.position &&
+          data.reported.position.lat) {
+          updateAddress(data);
+          updateMap(data);
+        } else {
+          setLoading(false);
+          alert('This device has not reported a position');
+        }
+        updateTimer = setTimeout(update, 30000);
+      });
+    if (showTrace) {
+
+      // Only request the last 12 hours
+      fetchTrace(ha.getToken(), trackingId, +new Date() - (12 * 60 * 60 * 1000));
+    } else {
+      hideTrace();
+    }
+
+  }
+
+    function fetchTrace(token, trackingId, after, pageToken) {
+        // If there is no pageToken, this is the start of a new polyline
+        const startNewLine = !pageToken;
+        tracking.traces.getAfter(trackingId, after, {
+                token,
+                pageToken
+            })
+            .then(function(response) {
+                if (response.data.length > 0) {
+                    if (showTrace) {
+                        drawTrace(response.data, startNewLine);
+                    }
+                }
+                if (response.pageToken) {
+                    fetchTrace(token, trackingId, after, response.pageToken);
+                }
+            })
+            .catch(function(errResponse) {
+                if (errResponse.name === 'SyntaxError') {
+                    showTrace = false;
+                } else if (errResponse.status === 404) {
+                    showTrace = false;
+                } else {
+                    throw errResponse;
+                }
+            })
+
+
+
+        const freshTrace = !pageToken;
+        if (!pageToken) {}
+    }
+  // Reverse geocode the last reported position of the device
+  function updateAddress(data) {
+    if (data && data.reported && data.reported.position && data.reported.position.lat) {
+      var latitude = data.reported.position.lat;
+      var longitude = data.reported.position.lng;
+      HEREMap.reverseGeocode([latitude, longitude], function(address) {
+        document.querySelector('address').innerHTML = address.label;
+      }, function(err) {
+        console.error(err)
+      });
+    }
+  }
+
+  // Update the state of the map
+  function updateMap(data) {
+    const latitude = data.reported.position.lat;
+    const longitude = data.reported.position.lng;
+
+    // Create the marker if necessary
+    if (!marker) {
+      // then add it to the map
+      marker = HEREMap.marker(map, [latitude, longitude]);
+    } else {
+      // Otherwise, update its position
+      marker.setPosition(HEREMap.normalisePosition([latitude, longitude]));
+    }
+
+    // Only jump to the marker if we're not looking elsewhere
+    if (mapSnapped) {
+      HEREMap.center(map, [latitude, longitude]);
+      HEREMap.zoom(map, 18);
+    }
+
+    // Show the time the shadow was last updated
+    document.querySelector('time').innerHTML = 'Last updated: ' + (new Date(data.reported.timestamp));
+
+    setLoading(false);
+  }
+
+  function setLoading(isLoading) {
+    if (isLoading) {
+      loading.style.display = 'block';
+    } else {
+      loading.style.display = 'none';
+      document.querySelector('#refresh img').classList.remove('loading');
+    }
+  }
+
+  // Update the trace on the map
+  function drawTrace(data, startNewLine) {
+        var now = +new Date();
+
+        if (startNewLine) {
+            hideTrace();
+        }
+
+        var points = data.map(function(ping) {
+            return ping.position
+        });
+
+        if (points.length === 0) {
+            return;
+        }
+
+        if (tracePolyline) {
+            tracePolyline = HEREMap.extendPolyline(tracePolyline, points)
+        } else {
+            // Draw the trace as a polyline
+            tracePolyline = HEREMap.polyline(map, points, {
+                style: {
+                    strokeColor: "blue",
+                    lineWidth: 5,
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                }
+            });
+        }
+
+        if (!pingCircleContainer) {
+            pingCircleContainer = HEREMap.createGroup(map);
+        }
+    }
+
+  // Hide the trace and tidy up
+  function hideTrace() {
+    if (tracePolyline) {
+      try {
+        map.removeObject(tracePolyline);
+        tracePolyline = null;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if (pingCircleContainer) {
+      try {
+        map.removeObject(pingCircleContainer);
+        pingCircleContainer = null;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  // Event Listeners
+  function addEventListeners() {
+    document.querySelector('#trace').addEventListener('click', function() {
+      showTrace = !showTrace;
+      if (!showTrace) {
+        hideTrace();
+      } else {
+        setLoading(true)
+        update();
+      }
+    });
+    document.querySelector('#refresh').addEventListener('click', function() {
+      document.querySelector('#refresh img').classList.add('loading');
+      mapSnapped = true;
+      update();
+    });
+  }
+
+  function parseQuery(qstr) {
+    var query = {};
+    var a = qstr.substr(1).split('&');
+    for (var i = 0; i < a.length; i++) {
+      var b = a[i].split('=');
+      query[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || '');
+    }
+    return query;
+  }
+  </script>
+</body>
+
+</html>

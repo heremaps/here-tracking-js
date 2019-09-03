@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>HERE Tracking – Tracker</title>
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+</head>
+
+<body class="device">
+  <h1>Device <span>position: <span id="positionstatus"></span></span></h1>
+  <div id="status"></div>
+  <form class="form-provision" id="credentialsForm">
+  <p>This web page acts as a virtual tracker. It uses the browser's <a href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API">Geolocation API</a> as the position to be sent to <a href="https://tracking.here.com/">HERE Tracking</a>.</p>
+    <p>Enter an existing Device Licence.</p>
+    <label class="form-account-label">
+      Device ID:
+      <input type="text" class="input-required-login" name="deviceId" id="deviceId" placeholder="Device ID" required />
+    </label>
+    <label class="form-account-label">
+      Device Secret:
+      <input type="text" name="deviceSecret" class="input-required-login" id="deviceSecret" placeholder="Device Secret" required />
+    </label>
+    <button id="save">Save</button>
+    <h2>Desired State</h2>
+    <pre id="state"></pre>
+</form>
+  <!-- HERE Tracking SDK -->
+  <script src="../lib/HERETracking.js"></script>
+  <!-- Credentials for demo -->
+  <script src="js/credentials.js"></script>
+  <!-- HERE Account helper -->
+  <script>
+  const tracking = new HERETracking();
+  tracking.environment = credentials.environment;
+
+  let token;
+  let refreshTime = +new Date();
+  let latestPosition;
+  // let latestSampleTime = +new Date();
+  let refreshTimer;
+
+  var watchID = navigator.geolocation.watchPosition(function(position) {
+    document.querySelector('#positionstatus').classList.add('on');
+    latestPosition = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+      accuracy: position.coords.accuracy
+    };
+    if(position.coords.altitude) {
+      latestPosition.alt = position.coords.altitude;
+      latestPosition.altaccuracy = position.coords.altitudeAccuracy;
+    }
+  });
+
+  const savedDeviceId = localStorage.getItem('deviceId');
+  const savedDeviceSecret = localStorage.getItem('deviceSecret');
+  if(savedDeviceId && savedDeviceSecret) {
+    document.querySelector('#deviceId').value = savedDeviceId;
+    document.querySelector('#deviceSecret').value = savedDeviceSecret;
+  }
+
+  document.querySelector('#credentialsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    localStorage.setItem('deviceId', document.querySelector('#deviceId').value);
+    localStorage.setItem('deviceSecret', document.querySelector('#deviceSecret').value);
+    refreshStatus();
+    return false;
+  })
+
+  function refreshStatus() {
+    clearTimeout(refreshTimer);
+    document.querySelector('#status').innerHTML = '';
+    ensureLoggedIn()
+      .then(token => {
+        if (!latestPosition) {
+          return;
+        }
+        return tracking.device.send({
+          position: latestPosition,
+          timestamp: +new Date()
+        }, {
+          token: token
+        })
+      })
+      .then(desired => {
+        document.querySelector('#state').innerHTML = JSON.stringify(desired, null, 4);
+        refreshTimer = setTimeout(refreshStatus, 10000);
+      })
+      .catch(err => {
+        document.querySelector('#status').innerHTML = 'Logged Out';
+      });
+  }
+
+  function ensureLoggedIn() {
+    if (+new Date() > refreshTime - (1000 * 60 * 15)) {
+      return tracking.device.login(
+          document.querySelector('#deviceId').value,
+          document.querySelector('#deviceSecret').value
+        )
+        .then(loginData => {
+          refreshTime = +new Date() + (loginData.expiresIn * 1000);
+          token = loginData.accessToken;
+          return loginData.accessToken;
+        });
+    } else {
+      return Promise.resolve(token);
+    }
+  }
+  </script>
+</body>
+
+</html>

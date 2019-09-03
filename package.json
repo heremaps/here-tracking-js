@@ -1,0 +1,75 @@
+{
+  "name": "@here/here-tracking-js",
+  "version": "2.0.40",
+  "description": "SDK to access the HERE Tracking Cloud",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config scripts/webpack.production.js --progress --colors",
+    "demo": "echo \"Step 1: Read the 'Demo' section of the README\nStep 2: Create demo/js/credentials.js\nStep 3: Open demo/index.html in a browser\"",
+    "dev": "webpack --config scripts/webpack.development.js --progress --colors --display-error-details",
+    "add-build": "git add ./lib",
+    "docs": "esdoc -c esdoc.json",
+    "lint": "eslint src/**",
+    "test": "npm run dev && npm run lint && npm run unit",
+    "unit": "nyc mocha --require jsdom-global/register --compilers js:@babel/register"
+  },
+  "dependencies": {
+    "crypto-js": "3.1.9-1",
+    "node-fetch": "2.3.0",
+    "oauth-1.0a": "2.2.5"
+  },
+  "devDependencies": {
+    "@babel/core": "7.4.5",
+    "@babel/preset-env": "7.4.5",
+    "@babel/register": "7.4.4",
+    "babel-eslint": "10.0.1",
+    "babel-loader": "8.0.6",
+    "babel-plugin-add-module-exports": "0.1.2",
+    "chai": "3.4.1",
+    "chai-as-promised": "6.0.0",
+    "esdoc": "1.1.0",
+    "esdoc-node": "1.0.4",
+    "esdoc-standard-plugin": "1.0.0",
+    "eslint": "5.16.0",
+    "eslint-loader": "2.1.2",
+    "jsdom": "15.1.1",
+    "jsdom-global": "3.0.2",
+    "mocha": "2.3.4",
+    "mocha-junit-reporter": "1.21.0",
+    "nyc": "13.3.0",
+    "pre-commit": "1.2.2",
+    "sinon": "1.17.7",
+    "sinon-as-promised": "4.0.3",
+    "webpack": "4.34.0",
+    "webpack-cli": "3.3.4",
+    "webpack-merge": "4.2.1"
+  },
+  "engines": {
+    "node": ">=9.11.1",
+    "npm": ">=5.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/heremaps/here-tracking-js.git"
+  },
+  "pre-commit": [
+    "lint",
+    "build",
+    "dev",
+    "add-build"
+  ],
+  "keywords": [
+    "tracking",
+    "location",
+    "API"
+  ],
+  "author": {
+    "name": "HERE Europe B.V.",
+    "url": "https://here.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/heremaps/here-tracking-js/issues"
+  },
+  "homepage": "https://github.com/heremaps/here-tracking-js"
+}

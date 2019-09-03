@@ -1,0 +1,17 @@
+.idea/
+.nyc_output/
+coverage/
+demo/
+docs/
+test/
+.babelrc
+.eslintrc
+.gitreview
+.gitignore
+.nycrc
+.ort.yml
+CONTRIBUTING.md
+esdoc.json
+Jenkinsfile
+test-results.xml
+webpack.*

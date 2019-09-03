@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>HERE Tracking – Device list</title>
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+</head>
+
+<body>
+  <h1>List of Devices</h1>
+  <ul id="deviceList">
+  </ul>
+  <ul id="buttons">
+    <li class="logoutbutton">
+      Log out
+    </li>
+  </ul>
+  <!-- HERE Tracking SDK -->
+  <script src="../lib/HERETracking.js"></script>
+  <!-- Credentials for demo -->
+  <script src="js/credentials.js"></script>
+  <!-- HERE Account helper -->
+  <script src="js/hereAccountHelper.js"></script>
+  <script>
+  const tracking = new HERETracking();
+  tracking.environment = credentials.environment;
+  if (typeof credentials === 'undefined') {
+    alert('Error: You must update the js/credentials.js file to use the demo');
+  }
+  const ha = hereAccountHelper(tracking);
+
+  if (ha.isLoggedIn()) {
+    tracking.users.listDevices({
+        token: ha.getToken()
+      })
+      .then(function(devices) {
+        if (devices.data) {
+          let deviceList = document.querySelector('#deviceList');
+          for (let i = 0; i < devices.data.length; i++) {
+            let deviceItem = document.createElement('li');
+            deviceItem.innerHTML = '<a href="viewer.html?trackingId=' + devices.data[i].trackingId + '">' + devices.data[i].trackingId + '</a>';
+            deviceList.appendChild(deviceItem);
+          }
+        }
+      })
+      .catch(function(err) {
+        console.error(err);
+      });
+  } else {
+    window.location = "login.html?returnTo=" + encodeURIComponent(window.location);
+  }
+
+  document.querySelector('.logoutbutton').addEventListener('click', function(e) {
+    ha.logout();
+  });
+  </script>
+</body>
+
+</html>
