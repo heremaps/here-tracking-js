@@ -63,11 +63,11 @@ Here is an overview of the top-level files contained in the repository:
 
 Include the minified file in your HTML:
 
-    <script src="HERETracking.min.js"></script>
+    <script src="https://unpkg.com/@here/tracking-js@2.0.40/lib/HERETracking.min.js"></script>
 
 ### Node.JS
 
-    const HERETracking = require('here-tracking-js');
+    const HERETracking = require('@here/tracking-js');
 
 ### HTML and Node.JS
 
