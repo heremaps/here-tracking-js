@@ -1,5 +1,5 @@
 {
-  "name": "@here/here-tracking-js",
+  "name": "@here/tracking-js",
   "version": "2.0.40",
   "description": "SDK to access the HERE Tracking Cloud",
   "main": "index.js",
