@@ -5,10 +5,10 @@ const libraryName = 'HERETracking';
 let outputFile = libraryName + '.js';
 
 const config = {
-  context: path.resolve(__dirname, '../', 'src'),
+  context: path.resolve(__dirname, '..', 'src'),
   entry: './index.js',
   output: {
-    path: path.resolve(__dirname, 'lib'),
+    path: path.resolve(__dirname, '..', 'lib'),
     filename: outputFile,
     library: libraryName,
     libraryTarget: 'umd',
