@@ -93,4 +93,59 @@ describe('Given an instance of the metadata module', function () {
       });
 
   });
+
+  describe('when I update metadata of geofence', () => {
+    it('should fetch with right parameters', () => {
+      const data = { key: 'value' };
+      const getCall = metadata.geofenceUpdate('geofenceId', data, { token: 'abc' });
+
+      return getCall
+        .then(() => {
+          expect(thisFetch.firstCall.args[1]).to.eql({
+            method: 'put',
+            headers: new Headers({
+              'Authorization': 'Bearer abc',
+              'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(data)
+          });
+        });
+    });
+  });
+
+  describe('when I update metadata property of geofence', () => {
+    it('should fetch with right parameters', () => {
+      const getCall = metadata.geofenceSetValue('geofenceId', 'key', 'updated value', { token: 'abc' });
+
+      return getCall
+        .then(() => {
+          expect(thisFetch.firstCall.args[1]).to.eql({
+            method: 'put',
+            headers: new Headers({
+              'Authorization': 'Bearer abc',
+              'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({ key: 'updated value' })
+          });
+        });
+    });
+  });
+
+  describe('when I remove metadata property of geofence', () => {
+    it('should fetch with right parameters', () => {
+      const getCall = metadata.geofenceDeleteKey('geofenceId', 'key', { token: 'abc' });
+
+      return getCall
+        .then(() => {
+          expect(thisFetch.firstCall.args[1]).to.eql({
+            method: 'put',
+            headers: new Headers({
+              'Authorization': 'Bearer abc',
+              'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify({ key: null })
+          });
+        });
+    });
+  });
 });

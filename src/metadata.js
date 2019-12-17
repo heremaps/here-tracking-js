@@ -256,6 +256,7 @@ class Metadata {
         return this.fetch(url, {
           method: 'put',
           headers: new Headers({
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }),
           body: JSON.stringify(metadata)
@@ -285,6 +286,7 @@ class Metadata {
         return this.fetch(url, {
           method: 'put',
           headers: new Headers({
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }),
           body: JSON.stringify({
@@ -315,6 +317,7 @@ class Metadata {
         return this.fetch(url, {
           method: 'put',
           headers: new Headers({
+            'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }),
           body: JSON.stringify({
