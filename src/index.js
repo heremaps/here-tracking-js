@@ -11,9 +11,13 @@ const Notifications = require('./notifications');
 const Shadows = require('./shadows');
 const Traces = require('./traces');
 const Transitions = require('./transitions');
+const Journeys = require('./journeys');
 const Users = require('./users');
 const Aliases = require('./aliases');
 const Metadata = require('./metadata');
+const Events = require('./events');
+const Rules = require('./rules');
+const Associations = require('./associations');
 const Messages = require('./messages');
 
 // Validation for correlationId
@@ -39,7 +43,7 @@ class HERETracking {
       'production': 'https://tracking.api.here.com'
     };
 
-    this._name = 'HERETracking v2.0.40';
+    this._name = 'HERETracking v2.1.12';
     this._environment = 'production';
     this._host = this._hosts[this._environment];
 
@@ -102,6 +106,10 @@ class HERETracking {
      */
     this.transitions = new Transitions(utils);
     /**
+     * Manage journey templates and instances: {@link Journeys}
+     */
+    this.journeys = new Journeys(utils);
+    /**
      * Access to device traces: {@link Traces}
      */
     this.traces = new Traces(utils);
@@ -117,6 +125,18 @@ class HERETracking {
      * Manage associated data for devices and geofences: {@link Metadata}
      */
     this.metadata = new Metadata(utils);
+    /**
+     * Create and manage sensor rules {@link Rules}
+     */
+    this.rules = new Rules(utils);
+    /**
+     * Manage sensor events {@link Events}
+     */
+    this.events = new Events(utils);
+    /**
+     * Manage associations between devices and rules {@link Associations}
+     */
+    this.associations = new Associations(utils);
   }
 
   /**
@@ -265,7 +285,7 @@ class HERETracking {
    * @returns {Array} Error messages for missing parameters
    */
   static check(options, requiredKeys) {
-    return requiredKeys.map(key => !options[key] && key)
+    return requiredKeys.map(key => (!options[key] && key) || key === 0)
       .filter(Boolean)
       .map(HERETracking.errorMessages);
   }

@@ -200,27 +200,20 @@ class Metadata {
   /**
    * Gets metadata associated with the geofence
    *
-   * Update the metadata object for the geofence. Provided
-   * metadata is merged with the existing metadata object
-   * (empty object in case there are no existing meta data);
-   * new keys are added, and the value of the existing keys
-   * is updated with the provided value. Adding value 'null'
-   * for a key deletes it from the metadata object.
-   *
    * @param {string} geofenceId - geofence ID
    * @param {Object} options - Object containing request options
    * @param {string} options.token - Valid user access token
    * @returns {Object} Provides all metadata in a JSON object
    * @throws {Error} When an HTTP error has occurred
    */
-  geofenceGet(geofenceId, { token, count, pageToken }) {
+  geofenceGet(geofenceId, { token }) {
 
     return this.validate({ token, geofenceId }, ['token', 'geofenceId'])
       .then(() => {
         const url = this.url('metadata', 'v2', 'geofences', geofenceId);
 
         return this.fetch(url, {
-          method: 'put',
+          method: 'get',
           credentials: 'include',
           headers: new Headers({
             'Authorization': `Bearer ${token}`

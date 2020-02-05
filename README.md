@@ -33,17 +33,29 @@ Here is an overview of the top-level files contained in the repository:
     |
     +- src    # Original source for each module
     |   |
+    |   +- aliases.js           # Create and retrieve retrieve aliases associated with a trackingId
+    |   |
+    |   +- associations.js      # Manage associations between devices and other entities
+    |   |
     |   +- device.js            # Use to create a virtual device
     |   |
     |   +- devices.js           # Access device management endpoints
     |   |
+    |   +- events.js            # View details about events created by devices and rules
+    |   |
     |   +- geofences.js         # Create and manage geofences
     |   |
-    |   +- index.js                 # Main HERETracking class
+    |   +- index.js             # Main HERETracking class
     |   |
-    |   +- messages.js              # Error messages
+    |   +- journeys.js          # Create and manage journey templates.
+    |   |
+    |   +- messages.js          # Error messages
+    |   |
+    |   +- metadata.js          # Create and retrieve retrieve metadata associated with a trackingId
     |   |
     |   +- notifications.js     # Subscribe to/unsubscribe from notification channels
+    |   |
+    |   +- rules.js             # Defining and manage sensor rules
     |   |
     |   +- shadows.js           # Manage device data
     |   |

@@ -1,6 +1,6 @@
 {
-  "name": "@here/tracking-js",
-  "version": "2.0.40",
+  "name": "@here/here-tracking-js",
+  "version": "2.1.12",
   "description": "SDK to access the HERE Tracking Cloud",
   "main": "index.js",
   "scripts": {
@@ -67,9 +67,12 @@
     "name": "HERE Europe B.V.",
     "url": "https://here.com"
   },
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "bugs": {
     "url": "https://github.com/heremaps/here-tracking-js/issues"
   },
-  "homepage": "https://github.com/heremaps/here-tracking-js"
+  "homepage": "https://github.com/heremaps/here-tracking-js",
+  "publishConfig": {
+    "registry": "https://artifactory.in.here.com/artifactory/api/npm/here-node-local"
+  }
 }
