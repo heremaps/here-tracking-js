@@ -43,12 +43,15 @@ class HERETracking {
       'production': 'https://tracking.api.here.com'
     };
 
-    this._name = 'HERETracking v2.1.12';
+    this._name = 'HERETracking v2.1.13';
     this._environment = 'production';
     this._host = this._hosts[this._environment];
 
     // If this is set, use it as a trace for all request
     this._correlationId = null;
+
+    // If this is set, use it on all API calls
+    this._projectId = null;
 
     const utils = {
       url: this.url.bind(this),
@@ -178,6 +181,21 @@ class HERETracking {
   }
 
   /**
+   * @returns {string} Specified projectId name
+   */
+  get projectId() {
+    return this._projectId;
+  }
+
+  /**
+   * Allows setting a global projectId for all requests
+   * @param {string} id
+   */
+  set projectId(id) {
+    this._projectId = id;
+  }
+
+  /**
    * Generate a correctly formatted URL pointing to the
    * right environment.
    *
@@ -194,6 +212,10 @@ class HERETracking {
    */
   url(...args) {
     const queryParams = {};
+
+    if (this._projectId) {
+      queryParams.projectId = this._projectId;
+    }
 
     if (typeof args[args.length - 1] === 'object') {
       const params = args.pop();
