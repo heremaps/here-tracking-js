@@ -152,6 +152,8 @@ class Geofences {
       .then(() => {
         const url = this.url('geofences', 'v2', geofence.id);
 
+        delete geofence.id;
+
         const fields = Object.keys(geofence);
 
         const missing = atLeastOneOf.filter(x => fields.indexOf(x) < 0);

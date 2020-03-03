@@ -1,6 +1,6 @@
 {
   "name": "@here/tracking-js",
-  "version": "2.1.13",
+  "version": "2.1.14",
   "description": "SDK to access the HERE Tracking Cloud",
   "main": "index.js",
   "scripts": {
@@ -71,8 +71,5 @@
   "bugs": {
     "url": "https://github.com/heremaps/here-tracking-js/issues"
   },
-  "homepage": "https://github.com/heremaps/here-tracking-js",
-  "publishConfig": {
-    "registry": "https://artifactory.in.here.com/artifactory/api/npm/here-node-local"
-  }
+  "homepage": "https://github.com/heremaps/here-tracking-js"
 }
