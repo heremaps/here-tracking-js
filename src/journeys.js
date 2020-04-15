@@ -186,10 +186,11 @@ class Instances {
    * Retrieve details about a journey instance.
    *
    * @param {number} journeyId - ID of journey instance to retrieve
-   * @param {number} checkupTs - timestamp at which to evaluate the journey delays
    * @param {Object} options - Object containing request options
+   * @param {number} options.checkupTs - timestamp at which to evaluate the journey delays
    * @param {string} options.token - valid user access token
-   * @param {string} options.detailed - required level of detail in response
+   * @param {string} [options.detailed] - required level of detail in response
+   * @param {string} [options.checkupTs] - timestamp we want information about.
    * @returns {Object} body of the journey instance response
    * @throws {Error} when an HTTP error has occurred
    */
@@ -215,8 +216,8 @@ class Instances {
   /**
    * List the journey instances available to the user
    *
-   * @param {number} checkupTs - timestamp at which to evaluate the journey delays
    * @param {Object} options - Object containing request options
+   * @param {number} options.checkupTs - timestamp at which to evaluate the journey delays
    * @param {string} options.token - valid user access token
    * @param {string} options.detailed - required level of detail in response
    * @returns {Object} body of the journey instance response
@@ -495,6 +496,7 @@ class Checkpoints {
   /**
    * Get the checkpoint details
    *
+   * @param {string} checkpointId - ID of checkpoint we want information about
    * @param {Object} options - Object containing request options
    * @param {string} options.token - valid user access token
    * @param {number} [options.pageSize] - max number of entries retrieved in the page

@@ -117,10 +117,11 @@ class Associations {
   /**
    * List the rules associated to this device.
    *
+   * @param {string} ruleId - ID of the rule we want information about
    * @param {Object} options - Object containing request options
-   * @param {string} options.token - Valid user access token
    * @param {number} [options.count] - Number of rules returned per page (default 100)
    * @param {string} [options.pageToken] - Page token used for retrieving next page
+   * @param {string} options.token - Valid user access token
    * @returns {Object} Body of the rules response
    * @throws {Error} When an HTTP error has occurred
    */

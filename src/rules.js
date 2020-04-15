@@ -149,9 +149,12 @@ class Rules {
   /**
    * Create a new attach-type sensor rule
    *
+   * @param {Object} rule - Object containing rule definition
+   * @param {string} rule.name - Valid user access token
+   * @param {string} rule.description - Valid user access token
    * @param {Object} options - Object containing request options
    * @param {string} options.token - Valid user access token
-   * @returns {Object} Body of the geofence response
+   * @returns {Object} ID of the rule
    * @throws {Error} When an HTTP error has occurred
    */
   createAttach({ name = '', description = '' }, { token }) {
@@ -175,9 +178,12 @@ class Rules {
   /**
    * Create a tamper-type sensor rule
    *
+   * @param {Object} rule - Object containing rule definition
+   * @param {string} rule.name - Valid user access token
+   * @param {string} rule.description - Valid user access token
    * @param {Object} options - Object containing request options
    * @param {string} options.token - Valid user access token
-   * @returns {Object} Body of the geofence response
+   * @returns {Object} ID of the rule
    * @throws {Error} When an HTTP error has occurred
    */
   createTamper({ name = '', description = '' }, { token }) {
