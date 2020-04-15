@@ -1,6 +1,6 @@
 {
   "name": "@here/tracking-js",
-  "version": "2.1.14",
+  "version": "2.2.0",
   "description": "SDK to access the HERE Tracking Cloud",
   "main": "index.js",
   "scripts": {

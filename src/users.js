@@ -127,6 +127,61 @@ class Users {
         }))
       .then(json => json.licenses);
   }
+
+  /**
+   * Get a single page of projects
+   *
+   * @param {Object} options Options containing the Authorization token and paging details
+   * @returns {Object} A page of the user's projects.
+   */
+  async getProjectsPage({ token, start, end }) {
+    return this.validate({ token }, ['token'])
+      .then(() => {
+        const url = this.url('projects', 'v1', { startIndex: start, endIndex: end, role: 'PrA' });
+
+        return this.fetch(url, {
+          method: 'GET',
+          headers: new Headers({
+            Authorization: `Bearer ${token}`
+          })
+        });
+      })
+      .then(json => json);
+  }
+
+  /**
+   * Get an array of tracking projects in the user account
+   *
+   * This slurps the projects response to gather all pages.
+   *
+   * @param {Object} options Options containing the Authorization token
+   * @returns {Array} A list of the user's projects.
+   */
+  async listProjects({ token }) {
+    return this.validate({ token }, ['token'])
+      .then(async () => {
+        const options = {
+          start: 0,
+          end: 100,
+          token
+        };
+
+        let projects = [];
+
+        let json = {
+          total: 1,
+          end: 0
+        };
+
+        while (json.total > json.end) {
+          json = await this.getProjectsPage(options); /* eslint-disable-line no-await-in-loop */
+          projects = projects.concat(json.projects.filter(prj => prj.type === 'tracking'));
+          options.start = json.end + 1;
+          options.end = json.end + 100;
+        }
+        return projects;
+      });
+  }
 }
 
 module.exports = Users;
