@@ -43,7 +43,7 @@ class HERETracking {
       'production': 'https://tracking.api.here.com'
     };
 
-    this._name = 'HERETracking v2.1.14';
+    this._name = 'HERETracking v2.2.1';
     this._environment = 'production';
     this._host = this._hosts[this._environment];
 
