@@ -134,7 +134,7 @@ class Users {
    * @param {Object} options Options containing the Authorization token and paging details
    * @returns {Object} A page of the user's projects.
    */
-  async getProjectsPage({ token, start, end }) {
+  getProjectsPage({ token, start, end }) {
     return this.validate({ token }, ['token'])
       .then(() => {
         const url = this.url('projects', 'v1', { startIndex: start, endIndex: end, role: 'PrA' });
@@ -157,7 +157,7 @@ class Users {
    * @param {Object} options Options containing the Authorization token
    * @returns {Array} A list of the user's projects.
    */
-  async listProjects({ token }) {
+  listProjects({ token }) {
     return this.validate({ token }, ['token'])
       .then(async () => {
         const options = {

@@ -259,7 +259,7 @@ describe('Given an instance of the geofence module', function () {
               'Authorization': 'Bearer 123',
               'Content-Type': 'application/json'
             }),
-            body: JSON.stringify({id: 123, type: 'mock', definition: 'test'})
+            body: JSON.stringify({type: 'mock', definition: 'test'})
           });
         });
     });
