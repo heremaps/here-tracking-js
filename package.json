@@ -1,6 +1,6 @@
 {
   "name": "@here/tracking-js",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "SDK to access the HERE Tracking Cloud",
   "main": "index.js",
   "scripts": {
@@ -40,9 +40,9 @@
     "pre-commit": "1.2.2",
     "sinon": "1.17.7",
     "sinon-as-promised": "4.0.3",
-    "webpack": "4.34.0",
-    "webpack-cli": "3.3.4",
-    "webpack-merge": "4.2.1"
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-merge": "^4.2.2"
   },
   "engines": {
     "node": ">=9.11.1",
